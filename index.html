@@ -10,18 +10,24 @@
     <meta name="viewport" content="width=device-width">
     <style>
       body {
-        font-size: 1.em; /* Increase font size */
+        font-size: 1em; /* Increase font size */
         padding: 20px; /* Add padding */
+        margin: 0; /* Remove default margin */
       }
       .wrapper {
         max-width: 100%; /* Allow wrapper to take full width */
         margin: 0 auto; /* Center align wrapper */
         padding: 20px; /* Add padding to wrapper */
+        box-sizing: border-box; /* Include padding in width and height */
       }
       section {
         width: 100%; /* Make section span full width */
         max-width: 1200px; /* Set a maximum width */
         margin: 0 auto; /* Center align section */
+        box-sizing: border-box; /* Include padding in width and height */
+      }
+      footer {
+        display: none; /* Hide footer if it’s causing issues */
       }
     </style>
   </head>
