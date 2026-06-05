@@ -26,9 +26,10 @@
       linear-gradient(180deg,rgba(12,11,10,.28) 0%,transparent 18%,transparent 85%,rgba(12,11,10,.42) 100%);}
     .eqn{position:fixed;left:clamp(22px,5vw,64px);bottom:20px;z-index:3;font-family:var(--mono);
       font-size:.66rem;letter-spacing:.08em;color:var(--faint);pointer-events:none;}
-    .cite{position:fixed;right:clamp(22px,5vw,64px);top:18px;z-index:5;font-family:var(--mono);
-      font-size:.72rem;font-style:italic;letter-spacing:.04em;color:rgba(150,150,156,0.5);
-      text-shadow:0 0 8px rgba(12,11,10,.9);pointer-events:none;}
+    .cite{position:fixed;right:clamp(22px,5vw,64px);top:18px;z-index:5;font-family:var(--display);
+      font-weight:400;font-size:.74rem;letter-spacing:.02em;color:rgba(218,218,224,0.8);text-align:right;
+      max-width:min(48vw,540px);line-height:1.3;
+      text-shadow:0 1px 2px #0c0b0a,0 0 10px rgba(12,11,10,.95),0 0 18px rgba(12,11,10,.85);pointer-events:none;}
     @media (max-width:640px){.eqn,.cite{display:none;}}
     .shell{position:relative;z-index:2;max-width:1240px;margin:0 auto;
       padding:clamp(40px,6vw,90px) clamp(22px,5vw,64px) 140px;display:grid;
@@ -86,10 +87,7 @@
   <div class="shell">
     <aside class="rail">
       <h1 class="rise d1">Ulises<br>Pereira<br><span class="em">Obilinovic</span></h1>
-      <p class="lede rise d2">I work at the intersection of applied mathematics and systems neuroscience,
-        building <span class="hl">data-constrained mechanistic models</span> of neural population dynamics.
-        I develop machine-learning methods that fit structured recurrent networks to recordings of thousands
-        of neurons in behaving mice &mdash; learning circuit-level theories in a tight theory&ndash;experiment loop.</p>
+      <p class="lede rise d2">I work at the intersection of applied mathematics and systems neuroscience, building <span class="hl">data-constrained mechanistic models</span> of neural population dynamics. I use &mdash; and, when needed, develop &mdash; machine-learning methods that fit structured recurrent networks to recordings of thousands of neurons in behaving mice, learning circuit-level theories in a tight theory&ndash;experiment loop.</p>
       <nav class="links rise d3">
         <a href="https://scholar.google.cl/citations?user=dpV8phYAAAAJ&amp;hl=en">Google Scholar</a>
         <a href="https://github.com/ulisespereira">GitHub</a>
@@ -142,7 +140,7 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
       function randn(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
       function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
       function makeRandn(s){const r=mulberry32(s);return function(){let u=0,v=0;while(u===0)u=r();while(v===0)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};}
-      const M=18, COLS=520;
+      const M=18; let COLS=520;
 
       // ===== CHAOS: Pereira-Obilinovic PRX chaotic associative memory =====
       const Nc=1000,gC=3.0,cHeb=1.0,bField=0.8,dtc=0.1;
@@ -209,10 +207,9 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
       let almSub=0, almAp=0, almHold=0;
       let almLat=IC_lat, almNeu=IC_neu;
 
-      // ===== scrolling buffers (shared) =====
-      const bMFT=[];for(let k=0;k<10;k++)bMFT.push(new Float32Array(COLS));
-      const bN=[];for(let m=0;m<M;m++)bN.push(new Float32Array(COLS));
-      const bPhase=new Int8Array(COLS);let head=0,filled=0;
+      // ===== scrolling buffers (shared; rebuilt on resize for constant density) =====
+      let bMFT,bN,bPhase,head=0,filled=0;
+      function rebuildBuffers(){bMFT=[];for(let k=0;k<10;k++)bMFT.push(new Float32Array(COLS));bN=[];for(let m=0;m<M;m++)bN.push(new Float32Array(COLS));bPhase=new Int8Array(COLS);head=0;filled=0;}
       const clamp1=v=>v<-1?-1:v>1?1:v;
       function pushSample(){
         if(phase===0){bMFT[0][head]=clamp1(mC*3);for(let m=0;m<M;m++)bN[m][head]=Math.tanh(xc[idxC[m]]);}
@@ -221,7 +218,8 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
         else{for(let k=0;k<10;k++)bMFT[k][head]=almLat[k];for(let m=0;m<M;m++)bN[m][head]=2*almNeu[m]-1;}
         bPhase[head]=phase;head=(head+1)%COLS;if(filled<COLS)filled++;}
 
-      function resize(){DPR=Math.min(window.devicePixelRatio||1,2);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';}
+      function resize(){DPR=Math.min(window.devicePixelRatio||1,2);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';
+        COLS=Math.max(360,Math.min(1200,Math.round(innerWidth/3)));rebuildBuffers();}
       const VIR=['#472d7b','#3b528b','#2c728e','#21918c','#28ae80','#5ec962'];
       const GREEN='rgba(110,206,88,',PURPLE='rgba(176,124,255,',CYAN='rgba(150,228,255,';
       const colX=c=>(c/(COLS-1))*W;
@@ -238,11 +236,11 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
       const metaCh=[];for(let k=0;k<pm;k++)metaCh.push({ch:k,col:WARM[k],lw:1.9,glow:'rgba(243,112,90,0.35)'});
       function draw(){
         ctx.clearRect(0,0,W,H);
-        const mftH=H*0.42,cy=mftH*0.5,bandAmp=mftH*0.36;
+        const mftH=Math.min(H*0.42,360*DPR),cy=mftH*0.5,bandAmp=mftH*0.36;
         ctx.lineWidth=1;ctx.strokeStyle='rgba(140,134,120,0.20)';ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();
         drawRun(chaosCh,0,cy,bandAmp);drawRun(seqCh,1,cy,bandAmp);drawRun(metaCh,2,cy,bandAmp);drawRun(almCh,3,cy,bandAmp);
-        const top=mftH,lane=(H-top)/M,amp=lane*0.46;
-        for(let m=0;m<M;m++){const baseY=top+lane*(m+0.5);
+        const top=mftH;let lane=(H-top)/M,y0=top;const maxLane=34*DPR;if(lane>maxLane){y0=top+((H-top)-maxLane*M)*0.5;lane=maxLane;}const amp=lane*0.46;
+        for(let m=0;m<M;m++){const baseY=y0+lane*(m+0.5);
           ctx.strokeStyle='rgba(232,176,75,'+((m%4===0)?0.5:0.32)+')';ctx.lineWidth=1*DPR;ctx.shadowColor='rgba(232,176,75,0.3)';ctx.shadowBlur=2*DPR;
           ctx.beginPath();for(let c=0;c<filled;c++){const bi=(head-filled+c+COLS*2)%COLS;const px=colX(c),py=baseY-bN[m][bi]*amp;c?ctx.lineTo(px,py):ctx.moveTo(px,py);}
           ctx.stroke();}ctx.shadowBlur=0;}
@@ -251,9 +249,9 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
       const CAPS=['\u1E8B = \u2212x + Jc\u00B7tanh(x) + b\u03BE  \u00B7  Jc = (g/\u221AN)R + (c/N)\u03BE\u03BE\u1D40  \u00B7  chaotic retrieval (m>0)',
         '\u03C4\u1E59 = \u2212r + \u03C6(Jr+I)  \u00B7  J = (1/N)\u03BEA\u03BE\u1D40, A = I + 6.5\u00B7S  \u00B7  p = 6  \u00B7  GPB sequence',
         '\u03C4\u1E59 = \u2212r + coef\u00B7(tanh(h)+1)/2  \u00B7  h = (r\u00B7D\u1D40)(J_rec\u1D40D) + b + I  \u00B7  ALM: IC \u2192 left / right sample'];
-      const CITES=['Pereira-Obilinovic et al., 2023','Gillett, Pereira, Brunel, 2020','Recanatesi, Pereira-Obilinovic et al., 2022','Pereira-Obilinovic et al., 2025'];
+      const CITES=['Pereira-Obilinovic, Aljadeff & Brunel \u00B7 PRX 2023','Gillett, Pereira & Brunel \u00B7 PNAS 2020','Recanatesi, Pereira-Obilinovic et al. \u00B7 Neuron 2022','Pereira-Obilinovic et al. \u00B7 bioRxiv 2025'];
       let phase=0,pframe=0;
-      function enter(ph){phase=ph;pframe=0;if(cap)cap.innerHTML=CAPS[ph];if(cite)cite.textContent=CITES[ph];
+      function enter(ph){phase=ph;pframe=0;if(cap)cap.innerHTML=CAPS[ph];if(cite)cite.innerHTML=CITES[ph];
         if(ph===0){for(let i=0;i<Nc;i++)xc[i]=0.5*xiC[i]+randn()*0.25;}
         else if(ph===1){rs.fill(0);seqStep=0;}
         else if(ph===2){for(let i=0;i<Nm;i++)um[i]=Fp[0][i]>0?3:0;zM=zbar;}
