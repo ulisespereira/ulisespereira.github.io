@@ -24,13 +24,14 @@
     .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
       background:radial-gradient(120% 90% at 25% 15%,transparent 45%,rgba(12,11,10,.38) 100%),
       linear-gradient(180deg,rgba(12,11,10,.28) 0%,transparent 18%,transparent 85%,rgba(12,11,10,.42) 100%);}
-    .eqn{position:fixed;left:clamp(22px,5vw,64px);bottom:20px;z-index:3;font-family:var(--mono);
+    .eqn{display:none;position:fixed;left:clamp(22px,5vw,64px);bottom:44px;z-index:3;font-family:var(--mono);
       font-size:.66rem;letter-spacing:.08em;color:var(--faint);pointer-events:none;}
-    .cite{position:fixed;right:clamp(22px,5vw,64px);top:18px;z-index:5;font-family:var(--mono);
-      font-size:.72rem;font-style:italic;letter-spacing:.04em;color:rgba(150,150,156,0.5);text-align:right;
-      max-width:min(48vw,540px);line-height:1.3;
+    .cite{position:fixed;left:clamp(22px,5vw,64px);bottom:20px;z-index:5;font-family:var(--mono);
+      font-size:.72rem;font-style:italic;letter-spacing:.04em;color:rgba(150,150,156,0.4);text-align:left;
+      max-width:min(72vw,560px);line-height:1.3;
       text-shadow:0 0 8px rgba(12,11,10,.9);pointer-events:none;}
-    @media (max-width:640px){.eqn,.cite{display:none;}}
+    @media (max-width:640px){.eqn{display:none;}
+      .cite{bottom:14px;left:18px;right:18px;max-width:none;font-size:.64rem;line-height:1.35;}}
     .shell{position:relative;z-index:2;max-width:780px;margin:0 auto;
       padding:clamp(40px,6vw,90px) clamp(22px,5vw,64px) 140px;display:grid;
       grid-template-columns:1fr;gap:clamp(36px,6vw,92px);align-items:start;}
@@ -214,6 +215,7 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
       const CHAOS_F=620,SEQ_F=760,META_F=820,ALM_F=900;
       const CAPS=['\u1E8B = \u2212x + Jc\u00B7tanh(x) + b\u03BE  \u00B7  Jc = (g/\u221AN)R + (c/N)\u03BE\u03BE\u1D40  \u00B7  chaotic retrieval (m>0)',
         '\u03C4\u1E59 = \u2212r + \u03C6(Jr+I)  \u00B7  J = (1/N)\u03BEA\u03BE\u1D40, A = I + 6.5\u00B7S  \u00B7  p = 6  \u00B7  GPB sequence',
+        '\u03C4u\u0307 = \u2212u + J\u02E2f(u) + z(t)\u00B7J\u1DA0f(u)  \u00B7  J\u02E2 stores p attractors, J\u1DA0 links \u03BC\u2192\u03BC+1  \u00B7  z(t) ~ OU correlated variability drives transitions  \u00B7  metastable attractor sequence',
         '\u03C4\u1E59 = \u2212r + coef\u00B7(tanh(h)+1)/2  \u00B7  h = (r\u00B7D\u1D40)(J_rec\u1D40D) + b + I  \u00B7  ALM: IC \u2192 left / right sample'];
       const CITES=['Pereira-Obilinovic, Aljadeff & Brunel \u00B7 PRX 2023','Gillett, Pereira & Brunel \u00B7 PNAS 2020','Recanatesi, Pereira-Obilinovic et al. \u00B7 Neuron 2022','Pereira-Obilinovic et al. \u00B7 bioRxiv 2025'];
       let phase=0,pframe=0;
@@ -239,10 +241,11 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
       const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
       resize();enter(0);for(let s=0;s<120;s++)stepChaos();
       if(reduce){for(let c=0;c<COLS;c++){advance();pushSample();}draw();}else requestAnimationFrame(frame);
-      let to;addEventListener('resize',()=>{clearTimeout(to);to=setTimeout(resize,150);});
+      let lastW=innerWidth;let to;addEventListener('resize',function(){if(innerWidth===lastW)return;lastW=innerWidth;clearTimeout(to);to=setTimeout(resize,150);});
     })();
 
 </script>
 </body>
 </html>
+
 
