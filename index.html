@@ -27,7 +27,7 @@
     .eqn{display:none;position:fixed;left:clamp(22px,5vw,64px);bottom:44px;z-index:3;font-family:var(--mono);
       font-size:.66rem;letter-spacing:.08em;color:var(--faint);pointer-events:none;}
     .cite{position:fixed;left:clamp(22px,5vw,64px);bottom:20px;z-index:5;font-family:var(--mono);
-      font-size:.72rem;font-style:italic;letter-spacing:.04em;color:rgba(150,150,156,0.4);text-align:left;
+      font-size:.72rem;font-style:italic;letter-spacing:.04em;color:rgba(150,150,156,0.55);text-align:left;
       max-width:min(72vw,560px);line-height:1.3;
       text-shadow:0 0 8px rgba(12,11,10,.9);pointer-events:none;}
     @media (max-width:640px){.eqn{display:none;}
@@ -88,7 +88,7 @@
   <div class="shell">
     <aside class="rail">
       <h1 class="rise d1">Ulises<br>Pereira<br><span class="em">Obilinovic</span></h1>
-      <p class="lede rise d2">I work at the intersection of applied mathematics and systems neuroscience, building <span class="hl">data-constrained mechanistic models</span> of neural population dynamics. I use and develop machine-learning methods that fit structured recurrent networks to recordings of thousands of neurons in behaving mice, learning circuit-level theories in a tight theory&ndash;experiment loop.</p>
+      <p class="lede rise d2">I work at the intersection of applied mathematics and systems neuroscience, building <span class="hl">data-constrained mechanistic models</span> of neural population dynamics. I use &mdash; and, when needed, develop &mdash; machine-learning methods that fit structured recurrent networks to recordings of thousands of neurons in behaving mice, learning circuit-level theories in a tight theory&ndash;experiment loop.</p>
       <nav class="links rise d3">
         <a href="https://scholar.google.cl/citations?user=dpV8phYAAAAJ&amp;hl=en">Google Scholar</a>
         <a href="https://github.com/ulisespereira">GitHub</a>
@@ -237,7 +237,17 @@ const ALM={"T":469,"latL":[[0.025,0.01,0.006,-0.028,-0.106,0.012,0.028,-0.052,0.
         else if(phase===1&&pframe>=SEQ_F)enter(2);
         else if(phase===2&&pframe>=META_F)enter(3);
         else if(phase===3&&pframe>=ALM_F)enter(0);}
-      function frame(){advance();pushSample();draw();requestAnimationFrame(frame);}
+      const STEP=1000/60;            // target speed: ~60 updates/sec on any display (bigger=slower, smaller=faster)
+      let _last=0,_acc=0;
+      function frame(t){
+        requestAnimationFrame(frame);
+        if(!_last){_last=t;return;}
+        _acc+=t-_last;_last=t;
+        if(_acc>250)_acc=250;        // avoid fast-forward after the tab was backgrounded
+        let stepped=false;
+        while(_acc>=STEP){advance();pushSample();_acc-=STEP;stepped=true;}
+        if(stepped)draw();
+      }
       const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
       resize();enter(0);for(let s=0;s<120;s++)stepChaos();
       if(reduce){for(let c=0;c<COLS;c++){advance();pushSample();}draw();}else requestAnimationFrame(frame);
