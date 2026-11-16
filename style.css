@@ -44,3 +44,19 @@ section[id=contact]{border-top:5px solid var(--accent)}
 .exact-panels{display:grid;max-width:360px;margin:0 auto}.exact-panel{grid-area:1/1;width:100%;display:block;transition:opacity .8s}.engagement .sweep-controls{margin:8px 25px 0 0}@media(prefers-reduced-motion:reduce){.exact-panel{transition:none}}
 
 .minimal-phase{max-width:360px;isolation:isolate}.phase-art{grid-area:1/1;width:100%;height:auto;transition:opacity 1.5s}.trajectory-motion{animation:trajectory-flow 4s linear infinite}.phase-paused .trajectory-motion{animation-play-state:paused}@keyframes trajectory-flow{to{stroke-dashoffset:-58}}@media(prefers-reduced-motion:reduce){.trajectory-motion{animation:none}.phase-art{transition:none}}
+/* A compact bibliography rhythm for the group homepage. */
+#research{border-top:0;padding-top:16px;padding-bottom:44px}
+#research .section-head{margin-bottom:5px}
+#research .section-head .label{color:#5b7375;letter-spacing:.11em}
+#research .papers article{grid-template-columns:118px minmax(0,1fr) 22px;align-items:start;column-gap:22px;padding:20px 0;border-top:1px solid #e4e8e7}
+#research .papers article:first-child{border-top:0}
+#research .papers .label{font-size:10px;letter-spacing:.08em;padding-top:5px;color:#617b7c}
+#research .papers h3{font-size:19px;line-height:1.22;letter-spacing:-.025em;margin-bottom:5px}
+#research .papers p{font-size:13px;line-height:1.42;color:#5d696c;max-width:690px}
+#research .papers .arrow{font-size:18px;line-height:1.3;color:#799093}
+#research .papers article:hover .arrow{color:var(--accent)}
+section[id=contact]{border-top:1px solid #e4e8e7;padding:26px 0 35px}
+@media(max-width:720px){#research{padding-top:6px;padding-bottom:34px}#research .papers article{grid-template-columns:minmax(0,1fr) 18px;column-gap:12px;padding:17px 0}#research .papers .label{grid-column:1/-1;padding-top:0;margin-bottom:2px}#research .papers h3{font-size:18px}#research .papers p{font-size:13px}#research .papers .arrow{grid-column:2;grid-row:2;align-self:start}}
+/* Keep the rotating scene and its controls clear of the first paper. */
+body.lab .hero{min-height:610px}
+@media(max-width:900px){body.lab .hero{min-height:700px}}
