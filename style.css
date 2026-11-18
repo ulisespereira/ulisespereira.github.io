@@ -74,3 +74,5 @@ body.lab .hero{min-height:610px}
 @media(max-width:720px){#research{padding-top:12px}#research .papers article{grid-template-columns:minmax(0,1fr) 85px;column-gap:12px;padding:13px 0}#research .papers h3{font-size:17px}#research .papers p{font-size:12px}#research .papers article>.label{font-size:9px;padding-top:2px}}
 
 #research .talk-link{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--accent)}#research .talk-link:hover{text-decoration:underline}
+
+body.lab .hero .hero-talk{position:relative;z-index:4;align-self:flex-start;margin-top:16px;padding-bottom:3px;border-bottom:1px solid var(--accent);font-size:13px;font-weight:700;color:var(--accent)}body.lab .hero .hero-talk:hover{text-decoration:none;border-bottom-color:currentColor}
